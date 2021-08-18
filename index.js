@@ -71,7 +71,7 @@ ArduinoSwitchPlatform.prototype.receiveMessage = function (value) {
   }
   if (!found) {
     try {
-      self.log(JSON.stringify(value));
+      self.log("Received unknown code: " + JSON.stringify(value));
     } catch (e) { this.log(e); }
   }
 };
@@ -128,7 +128,7 @@ function ArduinoSwitchAccessory (sw, log, config, transceiver) {
   }, self.throttle, self);
 }// TODO: code stuff
 ArduinoSwitchAccessory.prototype.notify = function (message) {
-  if (isSameAsSwitch(message, this.sw)) {
+  if (isSameMessage(message, this.sw)) {
     if (getSwitchState(message, this.sw)) {
       this.notifyOn();
     } else {
@@ -185,7 +185,7 @@ function ArduinoButtonAccessory (sw, log, config) {
   }, self.throttle, self);
 }
 ArduinoButtonAccessory.prototype.notify = function (message) {
-  if (isSameAsSwitch(message, this.sw, true)) {
+  if (isSameMessage(message, this.sw, true)) {
     this.notifyOn();
     return true;
   }
@@ -230,7 +230,7 @@ function ArduinoSmokeAccessory (sw, log, config) {
   }, self.throttle, self);
 }
 ArduinoSmokeAccessory.prototype.notify = function (message) {
-  if (isSameAsSwitch(message, this.sw, true)) {
+  if (isSameMessage(message, this.sw, true)) {
     this.notifyOn();
     return true;
   }
@@ -275,7 +275,7 @@ function ArduinoWaterAccessory (sw, log, config) {
   }, self.throttle, self);
 }
 ArduinoWaterAccessory.prototype.notify = function (message) {
-  if (isSameAsSwitch(message, this.sw, true)) {
+  if (isSameMessage(message, this.sw, true)) {
     this.notifyOn();
     return true;
   }
@@ -320,7 +320,7 @@ function ArduinoMotionAccessory (sw, log, config) {
   }, self.throttle, self);
 }
 ArduinoMotionAccessory.prototype.notify = function (message) {
-  if (isSameAsSwitch(message, this.sw, true)) {
+  if (isSameMessage(message, this.sw, true)) {
     this.notifyOn();
     return true;
   }
@@ -397,32 +397,39 @@ function getSwitchState (message, sw) {
   }
   return false;
 }
-// TODO not needed since isSameMessage on/off addition?
-function isSameAsSwitch (message, sw, compareState = false) {
-  if (sw.on && sw.off) { // on/off format
-    if (isSameMessage(message, sw.on, compareState)) return true;
-    if (isSameMessage(message, sw.off, compareState)) return true;
-  } else { // button/espilight format
-    if (isSameMessage(message, sw, compareState)) return true;
-  }
-  return false;
-}
 function imSameMessage (message) {
   // int idx = sentCodes.findIndex(imSameMessage, sw);
   // "this" is compare message info or switch info
   return isSameMessage(message, this, true);
 }
-function isSameMessage (message, prototype, compareState = false) {
+function isSameMessage(message, prototype, compareState = false) {
   if (!message || !prototype) return;
   if (message.code && prototype.code) {
-    if (prototype.code == message.code) return true;
-  } else if (message.code && prototype.on) {
-    if (prototype.on.code == message.code) return true;
-  } else if (message.code && prototype.off) {
-    if (prototype.off.code == message.code) return true;
+    if (prototype.code == message.code)
+        return true;
+  }
+  if (message.code && prototype.on) {
+    if (prototype.on.code == message.code)
+      return true;
+    else if (prototype.on.equivalentCodes &&
+        prototype.on.equivalentCodes.includes(message.code)){
+      //overwrite original code with equivalent one
+      message.code = prototype.on.code;
+      return true;
+    }
+  }
+  if (message.code && prototype.off) {
+    if (prototype.off.code == message.code)
+      return true;
+    else if(prototype.off.equivalentCodes &&
+          prototype.off.equivalentCodes.includes(message.code)){
+      //overwrite original code with equivalent one
+      message.code = prototype.off.code;
+      return true;
+    } 
   }
   // TODO: other kinds of espilight messages without id/unit
-  else if (message.type && prototype.type) {
+  if (message.type && prototype.type) {
     if (prototype.type == message.type &&
         prototype.message.id == message.message.id &&
         prototype.message.unit == message.message.unit) {

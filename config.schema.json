@@ -111,6 +111,18 @@
                 "title":"Protocol",
                 "type":"number",
                 "required":false
+              },
+              "equivalentCodes":{
+                "title":"Equivalent Codes",
+                "type":"array",
+                "required":false,
+                "items": {
+                  "code":{
+                    "title":"Code",
+                    "type":"number",
+                    "required":false
+                  }
+                }
               }
             }
           },
@@ -133,6 +145,18 @@
                 "title":"Protocol",
                 "type":"number",
                 "required":false
+              },
+              "equivalentCodes":{
+                "title":"Equivalent Codes",
+                "type":"array",
+                "required":false,
+                "items": {
+                  "code":{
+                    "title":"Code",
+                    "type":"number",
+                    "required":false
+                  }
+                }
               }
             }
           }
@@ -199,7 +223,19 @@
             "title":"Protocol",
             "type":"number",
             "required":false
-          }
+          },
+          "equivalentCodes":{
+            "title":"Equivalent Codes",
+            "type":"array",
+            "required":false,
+            "items": {
+              "code":{
+                "title":"Code",
+                "type":"number",
+                "required":false
+              }
+            }
+          },
         }
       }
     },
@@ -263,6 +299,18 @@
             "title":"Protocol",
             "type":"number",
             "required":false
+          },
+          "equivalentCodes":{
+            "title":"Equivalent Codes",
+            "type":"array",
+            "required":false,
+            "items": {
+              "code":{
+                "title":"Code",
+                "type":"number",
+                "required":false
+              }
+            }
           }
         }
       }
@@ -327,6 +375,18 @@
             "title":"Protocol",
             "type":"number",
             "required":false
+          },
+          "equivalentCodes":{
+            "title":"Equivalent Codes",
+            "type":"array",
+            "required":false,
+            "items": {
+              "code":{
+                "title":"Code",
+                "type":"number",
+                "required":false
+              }
+            }
           }
         }
       }
@@ -391,6 +451,18 @@
             "title":"Protocol",
             "type":"number",
             "required":false
+          },
+          "equivalentCodes":{
+            "title":"Equivalent Codes",
+            "type":"array",
+            "required":false,
+            "items": {
+              "code":{
+                "title":"Code",
+                "type":"number",
+                "required":false
+              }
+            }
           }
         }
       }
